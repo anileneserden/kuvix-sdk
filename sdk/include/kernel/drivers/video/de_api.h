@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,6 +49,19 @@ typedef struct {
 
     int (*get_file_count)(const char* path);
     int (*get_file_name_at)(const char* path, int index, char* dest_name, int max_len);
+
+    // Uygulama Çalıştırma Fonksiyonu
+    int (*exec)(const char* path);
+
+    // Dinamik Pencere Oluşturma İşlevi (ID Döner)
+    int (*create_window)(int x, int y, int w, int h);
+
+    // String Formatlama İşlevi (ksprintf'e yönlendirilmiştir)
+    int (*ksprintf)(char* str, unsigned long size, const char* format, ...);
+
+    size_t (*strlen)(const char* str);
+    int (*strcmp)(const char* s1, const char* s2);
+    int (*strncmp)(const char* s1, const char* s2, size_t n);
 } DE_API;
 
 #pragma pack(pop)

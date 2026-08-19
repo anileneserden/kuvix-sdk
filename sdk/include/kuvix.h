@@ -5,19 +5,20 @@
 extern "C" {
 #endif
 
-// UI Element yapılandırması için basit bir sınıf/yapı
+// UI Element yapılandırması (Zincirleme event yönetimi için)
 class UIElement {
 public:
     const char* name;
-    void event(const char* eventName, void (*callback)());
+    void event(const char* event_name, void (*callback)());
 };
 
-// Temel KuvixOS SDK Fonksiyonları
+// Temel KuvixOS GUI SDK Fonksiyonları
 void loadUI(const char* path);
 void setElementText(const char* name, const char* text);
 void runApp(void);
-UIElement getElementByName(const char* name);
-void printk(const char* format, ...);
+
+// Elementi ismine göre seçip döndüren fonksiyon (Referans döner)
+UIElement& getElementByName(const char* name);
 
 #ifdef __cplusplus
 }
