@@ -4,18 +4,22 @@
 #include <stdint.h>
 
 struct ElementConfig {
-    char label_text[128];
     int label_x, label_y;
+    char label_text[64];
     
+    int button_x, button_y;
+    int button_width, button_height;
     char button_text[64];
-    int button_x, button_y, button_width, button_height;
+
+    int panel_x, panel_y;
+    int panel_width, panel_height;
 };
 
 struct WindowConfig {
     char title[64];
     int width;
     int height;
-    uint32_t background_color; // Pencere arkaplan rengi eklendi
+    uint32_t background_color;
 };
 
 class LayoutLoader {

@@ -48,4 +48,10 @@ public:
     void draw(DE_API* api) override;
 };
 
+class Panel : public Widget {
+public:
+    Panel(const char* w_name, int px, int py, int pw, int ph, uint32_t bg, int radius);
+    void draw(DE_API* api) override;
+};
+
 #endif // WIDGET_HPP

@@ -47,43 +47,24 @@ public:
         }
         title[t_idx] = '\0';
 
-        // Varsayılan element konum ve boyutları
-        elem_cfg.label_x = 20; elem_cfg.label_y = 40;
-        elem_cfg.button_x = 20; elem_cfg.button_y = 80;
-        elem_cfg.button_width = 160; elem_cfg.button_height = 35;
-        
-        // Varsayılan metinleri atayalım
-        const char* def_label_text = "Varsayilan Etiket";
-        int l_i = 0;
-        while(def_label_text[l_i] != '\0' && l_i < 127) {
-            elem_cfg.label_text[l_i] = def_label_text[l_i];
-            l_i++;
-        }
-        elem_cfg.label_text[l_i] = '\0';
-
-        const char* def_btn_text = "Tikla";
-        int b_i = 0;
-        while(def_btn_text[b_i] != '\0' && b_i < 63) {
-            elem_cfg.button_text[b_i] = def_btn_text[b_i];
-            b_i++;
-        }
-        elem_cfg.button_text[b_i] = '\0';
+        // Varsayılan panel konum ve boyutları
+        elem_cfg.panel_x = 50;
+        elem_cfg.panel_y = 50;
+        elem_cfg.panel_width = 100;
+        elem_cfg.panel_height = 100;
 
         if (json_data) {
             WindowConfig win_cfg;
             win_cfg.width = 0;
             win_cfg.height = 0;
             win_cfg.title[0] = '\0';
-            win_cfg.background_color = 0; // Varsayılan değer
+            win_cfg.background_color = 0;
 
             LayoutLoader::parse_json_config(json_data, win_cfg, elem_cfg);
 
             if (win_cfg.width > 50) width = win_cfg.width;
             if (win_cfg.height > 50) height = win_cfg.height;
 
-            // Eğer JSON'dan geçerli bir renk okunduysa temaya işle
-            // (Siyah renk #000000 de dahil olmak üzere doğrudan atayabiliriz, 
-            // çünkü parse_json_config içinde varsayılan olarak zaten atanıyor)
             theme.bg_color = win_cfg.background_color;
 
             if (win_cfg.title[0] != '\0') {
@@ -96,12 +77,9 @@ public:
             }
         }
 
-        // Widget'ları oluştur ve pencereye ekle
-        Label* lbl = new Label("label", elem_cfg.label_x, elem_cfg.label_y, 0x0089B4FA, elem_cfg.label_text);
-        Button* btn = new Button("button", elem_cfg.button_x, elem_cfg.button_y, elem_cfg.button_width, elem_cfg.button_height, 0x003D405B, 0x00FFFFFF, 4, elem_cfg.button_text);
-
-        add_widget(lbl);
-        add_widget(btn);
+        // Constructor içinde panel oluşturulurken:
+        Panel* panel = new Panel("panel", x + elem_cfg.panel_x, y + theme.header_height + elem_cfg.panel_y, elem_cfg.panel_width, elem_cfg.panel_height, 0x002A2E3D, 4);
+        add_widget(panel);
 
         update_widgets();
     }
@@ -142,14 +120,11 @@ public:
             if (!widgets[i]) continue;
             
             // İsme veya tipe göre konumları güncelle
-            if (widgets[i]->name[0] == 'l' || widgets[i]->name[0] == 'L') {
-                widgets[i]->x = x + elem_cfg.label_x;
-                widgets[i]->y = y + theme.header_height + elem_cfg.label_y;
-            } else if (widgets[i]->name[0] == 'b' || widgets[i]->name[0] == 'B') {
-                widgets[i]->x = x + elem_cfg.button_x;
-                widgets[i]->y = y + theme.header_height + elem_cfg.button_y;
-                widgets[i]->width = elem_cfg.button_width;
-                widgets[i]->height = elem_cfg.button_height;
+            if (widgets[i]->name[0] == 'p' || widgets[i]->name[0] == 'P') {
+                widgets[i]->x = x + elem_cfg.panel_x;
+                widgets[i]->y = y + theme.header_height + elem_cfg.panel_y;
+                widgets[i]->width = elem_cfg.panel_width;
+                widgets[i]->height = elem_cfg.panel_height;
             }
         }
     }
