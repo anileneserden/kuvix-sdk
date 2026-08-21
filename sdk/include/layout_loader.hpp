@@ -15,6 +15,7 @@ struct WindowConfig {
     char title[64];
     int width;
     int height;
+    uint32_t background_color; // Pencere arkaplan rengi eklendi
 };
 
 class LayoutLoader {
@@ -28,6 +29,7 @@ private:
     static const char* custom_strchr(const char* s, int c);
     static bool find_json_string(const char* json, const char* key, char* out_val, int max_len);
     static int find_json_int(const char* json, const char* key, int default_val);
+    static uint32_t hex_to_uint32(const char* hex_str); // Hex renk dönüştürücü eklendi
 };
 
 #endif

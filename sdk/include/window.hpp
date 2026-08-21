@@ -74,11 +74,17 @@ public:
             win_cfg.width = 0;
             win_cfg.height = 0;
             win_cfg.title[0] = '\0';
+            win_cfg.background_color = 0; // Varsayılan değer
 
             LayoutLoader::parse_json_config(json_data, win_cfg, elem_cfg);
 
             if (win_cfg.width > 50) width = win_cfg.width;
             if (win_cfg.height > 50) height = win_cfg.height;
+
+            // Eğer JSON'dan geçerli bir renk okunduysa temaya işle
+            // (Siyah renk #000000 de dahil olmak üzere doğrudan atayabiliriz, 
+            // çünkü parse_json_config içinde varsayılan olarak zaten atanıyor)
+            theme.bg_color = win_cfg.background_color;
 
             if (win_cfg.title[0] != '\0') {
                 int i = 0;
@@ -165,6 +171,26 @@ public:
 
     void update(const de_mouse_state_t& mouse) {
         if (!is_open) return;
+
+        // --- HOVER KONTROLÜ ---
+        for (int i = 0; i < widget_count; i++) {
+            if (!widgets[i]) continue;
+            if (widgets[i]->type == WIDGET_BUTTON) {
+                Button* btn = (Button*)widgets[i];
+                // Fare butonun sınırları içinde mi?
+                if (mouse.x >= btn->x && mouse.x <= btn->x + btn->width &&
+                    mouse.y >= btn->y && mouse.y <= btn->y + btn->height) {
+                    if (!btn->is_hovered) {
+                        btn->is_hovered = true;
+                        // İsteğe bağlı: Loglama veya konsola yazdırma
+                        // printf("Buton uzerine gelindi!\n"); 
+                    }
+                } else {
+                    btn->is_hovered = false;
+                }
+            }
+        }
+        // ---------------------
 
         if (mouse.left_button == 1) {
             if (dragging == 0) {
