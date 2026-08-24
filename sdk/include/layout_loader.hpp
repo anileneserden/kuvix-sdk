@@ -13,6 +13,8 @@ struct ElementConfig {
 
     int panel_x, panel_y;
     int panel_width, panel_height;
+
+    char image_path[128];
 };
 
 struct WindowConfig {

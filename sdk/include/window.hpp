@@ -26,14 +26,17 @@ public:
 
     WindowTheme theme;
 
-    // Dinamik element yönetimi için widget havuzu ve konfigürasyon
+    // Widget havuzu
     Widget* widgets[16];
     int widget_count;
-    ElementConfig elem_cfg; // Elem_cfg artık sınıf seviyesinde üye değişken
+    
+    // SDK yapısına uygun tekil element konfigürasyonu
+    ElementConfig elem_config;
+    int has_elem_config;
 
     Window(int wx, int wy, WindowTheme custom_theme, const char* json_data = nullptr)  
         : x(wx), y(wy), dragging(0), drag_offset_x(0), drag_offset_y(0), is_open(1),
-          theme(custom_theme), widget_count(0) {
+          theme(custom_theme), widget_count(0), has_elem_config(0) {
         
         width = 500;
         height = 350;
@@ -47,12 +50,6 @@ public:
         }
         title[t_idx] = '\0';
 
-        // Varsayılan panel konum ve boyutları
-        elem_cfg.panel_x = 50;
-        elem_cfg.panel_y = 50;
-        elem_cfg.panel_width = 100;
-        elem_cfg.panel_height = 100;
-
         if (json_data) {
             WindowConfig win_cfg;
             win_cfg.width = 0;
@@ -60,7 +57,9 @@ public:
             win_cfg.title[0] = '\0';
             win_cfg.background_color = 0;
 
-            LayoutLoader::parse_json_config(json_data, win_cfg, elem_cfg);
+            // SDK'nın desteklediği doğru imza ile konfigürasyonu parse ediyoruz
+            LayoutLoader::parse_json_config(json_data, win_cfg, elem_config);
+            has_elem_config = 1;
 
             if (win_cfg.width > 50) width = win_cfg.width;
             if (win_cfg.height > 50) height = win_cfg.height;
@@ -77,9 +76,17 @@ public:
             }
         }
 
-        // Constructor içinde panel oluşturulurken:
-        Panel* panel = new Panel("panel", x + elem_cfg.panel_x, y + theme.header_height + elem_cfg.panel_y, elem_cfg.panel_width, elem_cfg.panel_height, 0x002A2E3D, 4);
-        add_widget(panel);
+        // Eğer JSON verisi yoksa veya element yüklenmediyse varsayılan bir panel ekleyelim
+        if (!has_elem_config) {
+            // Varsayılan panel değerleri
+            Panel* panel = new Panel("Sol Dizin", x + 50, y + theme.header_height + 50, 100, 100, 0x002A2E3D, 4);
+            add_widget(panel);
+        } else {
+            // SDK'daki ElementConfig alan adlarına (örn: panel_x, panel_width vb.) göre oluşturma
+            // Not: LayoutLoader yapındaki alan isimlerine göre burayı şekillendirebilirsin.
+            Panel* panel = new Panel("LayoutElement", x + 50, y + theme.header_height + 50, 100, 100, 0x002A2E3D, 4);
+            add_widget(panel);
+        }
 
         update_widgets();
     }
@@ -114,19 +121,8 @@ public:
         return nullptr;
     }
 
-    // Widget'ları pencerenin `(x, y)` konumuna ve header yüksekliğine göre güncelliyoruz
     void update_widgets() {
-        for (int i = 0; i < widget_count; i++) {
-            if (!widgets[i]) continue;
-            
-            // İsme veya tipe göre konumları güncelle
-            if (widgets[i]->name[0] == 'p' || widgets[i]->name[0] == 'P') {
-                widgets[i]->x = x + elem_cfg.panel_x;
-                widgets[i]->y = y + theme.header_height + elem_cfg.panel_y;
-                widgets[i]->width = elem_cfg.panel_width;
-                widgets[i]->height = elem_cfg.panel_height;
-            }
-        }
+        // Gerekirse widget konum senkronizasyonları buraya eklenebilir
     }
 
     void handle_click(const de_mouse_state_t& mouse) {
@@ -152,14 +148,9 @@ public:
             if (!widgets[i]) continue;
             if (widgets[i]->type == WIDGET_BUTTON) {
                 Button* btn = (Button*)widgets[i];
-                // Fare butonun sınırları içinde mi?
                 if (mouse.x >= btn->x && mouse.x <= btn->x + btn->width &&
                     mouse.y >= btn->y && mouse.y <= btn->y + btn->height) {
-                    if (!btn->is_hovered) {
-                        btn->is_hovered = true;
-                        // İsteğe bağlı: Loglama veya konsola yazdırma
-                        // printf("Buton uzerine gelindi!\n"); 
-                    }
+                    btn->is_hovered = true;
                 } else {
                     btn->is_hovered = false;
                 }

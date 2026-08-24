@@ -40,7 +40,7 @@ typedef struct {
     void (*log)(const char* msg);
 
     // KBI Dosya Çizim Fonksiyonu
-    int (*render_kbi)(int x, int y, const char* filepath);
+    int (*render_kbi)(int x, int y, int w, int h, const char* filepath);
 
     int (*create_file)(const char* path, const char* content, uint32_t size);
     int (*read_file)(const char* path, char* buffer, uint32_t max_size);
