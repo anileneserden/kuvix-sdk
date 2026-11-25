@@ -29,6 +29,7 @@ typedef struct {
     void (*put_pixel)(int x, int y, uint32_t color);
     void (*draw_rect)(int x, int y, int w, int h, uint32_t color);
     void (*fill_round_rect)(int x, int y, int w, int h, int r, uint32_t color);
+    void (*fill_round_rect4)(int x, int y, int w, int h, int rtl, int rtr, int rbl, int rbr, uint32_t color);
     void (*draw_text)(int x, int y, const char* text, uint32_t color);
     void (*clear_screen)(uint32_t color);
     void (*update_display)(void);
@@ -40,7 +41,7 @@ typedef struct {
     void (*log)(const char* msg);
 
     // KBI Dosya Çizim Fonksiyonu
-    int (*render_kbi)(int x, int y, int w, int h, const char* filepath);
+    int (*render_kbi)(int x, int y, const char* filepath);
 
     int (*create_file)(const char* path, const char* content, uint32_t size);
     int (*read_file)(const char* path, char* buffer, uint32_t max_size);
@@ -62,6 +63,7 @@ typedef struct {
     size_t (*strlen)(const char* str);
     int (*strcmp)(const char* s1, const char* s2);
     int (*strncmp)(const char* s1, const char* s2, size_t n);
+    char* (*strrchr)(const char* s, int c);
 
     void (*exit_de)(void);
 } DE_API;

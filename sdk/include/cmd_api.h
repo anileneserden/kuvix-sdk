@@ -17,11 +17,14 @@ typedef struct {
     // Sürücüye özel komut, kontrol veya işlem göndermek için (Sürücü control rutini köprüsü):
     int  (*control_driver)(const char* driver_name, const char* command, void* arg, uint32_t arg_size);
 
-    // Dinamik sürücü/modül yüklemek için (modprobe desteği):
+    // Dinamik sürücü yüklemek için (sürücü modprobe desteği):
     int  (*load_driver)(const char* name, const char* filepath);
 
+    // Dinamik çekirdek modülü yüklemek için (kmod modprobe desteği):
+    int  (*load_kmod)(const char* name, const char* filepath);
+
     // Dinamik kmod operasyonlarına ve modüller arası köprülere erişmek için:
-    void* (*get_kmod_operation)(const char* op_name);
+    void* (*get_kmod_operation)(const char* mod_name, const char* op_name);
 } CmdAPI;
 
 #endif

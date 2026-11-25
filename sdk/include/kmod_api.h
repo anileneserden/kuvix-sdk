@@ -12,8 +12,8 @@ typedef struct {
     int (*read_file)(const char* path, char* buffer, uint32_t max_size);
 } KModKernelAPI;
 
-// Tamamen dinamik ve isme göre operasyon döndüren evrensel yapı:
 typedef struct {
+    int (*control)(uint32_t cmd, void* arg);
     void* (*get_operation)(const char* op_name);
 } KModOperations;
 

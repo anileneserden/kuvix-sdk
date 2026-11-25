@@ -7,7 +7,8 @@
 extern "C" {
 #endif
 
-inline void* memset(void* s, int c, size_t n) {
+// --- Freestanding String ve Bellek Fonksiyonları ---
+static void* memset(void* s, int c, size_t n) {
     unsigned char* p = (unsigned char*)s;
     while (n--) {
         *p++ = (unsigned char)c;
@@ -15,7 +16,7 @@ inline void* memset(void* s, int c, size_t n) {
     return s;
 }
 
-inline void* memcpy(void* dest, const void* src, size_t n) {
+static void* memcpy(void* dest, const void* src, size_t n) {
     char* d = (char*)dest;
     const char* s = (const char*)src;
     while (n--) {
@@ -24,7 +25,7 @@ inline void* memcpy(void* dest, const void* src, size_t n) {
     return dest;
 }
 
-inline void* memmove(void* dest, const void* src, size_t n) {
+static void* memmove(void* dest, const void* src, size_t n) {
     char* d = (char*)dest;
     const char* s = (const char*)src;
     if (d < s) {
@@ -37,7 +38,7 @@ inline void* memmove(void* dest, const void* src, size_t n) {
     return dest;
 }
 
-inline size_t strlen(const char* s) {
+static size_t strlen(const char* s) {
     size_t len = 0;
     while (s[len]) {
         len++;
@@ -45,7 +46,7 @@ inline size_t strlen(const char* s) {
     return len;
 }
 
-inline int strcmp(const char* s1, const char* s2) {
+static int strcmp(const char* s1, const char* s2) {
     while (*s1 && (*s1 == *s2)) {
         s1++;
         s2++;
@@ -53,7 +54,7 @@ inline int strcmp(const char* s1, const char* s2) {
     return *(const unsigned char*)s1 - *(const unsigned char*)s2;
 }
 
-inline int memcmp(const void* s1, const void* s2, size_t n) {
+static int memcmp(const void* s1, const void* s2, size_t n) {
     const unsigned char* p1 = (const unsigned char*)s1;
     const unsigned char* p2 = (const unsigned char*)s2;
     while (n--) {
